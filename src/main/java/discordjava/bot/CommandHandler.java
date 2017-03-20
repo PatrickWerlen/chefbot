@@ -3,7 +3,7 @@ package discordjava.bot;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
 
-public class CommandHandler {
+public class CommandHandler extends ChefBot{
     private final IMessage message;
     private final String command;
     private final IUser user;
@@ -11,7 +11,7 @@ public class CommandHandler {
 
     //enter all commands here. -> insert in switch execute() -> create function
     private enum Commands{
-        help, hello, faggot, commands
+        help, commands
     }
 
     public CommandHandler(IMessage message, IUser user){
@@ -21,31 +21,6 @@ public class CommandHandler {
 
         execute(this.command);
 
-    }
-
-    private void execute(String command){
-        try {
-            Commands commands = Commands.valueOf(command);
-            switch (commands) {
-                case help:
-                    System.out.println("help");
-                    break;
-                case commands:
-                    System.out.println("commands");
-                    break;
-                case faggot:
-                    System.out.println("faggot");
-                    break;
-                case hello:
-                    System.out.println("hello");
-                    break;
-                default:
-                    System.out.println("command not valid");
-                    break;
-            }
-        } catch (Exception e){
-            System.out.println("command not valid");
-        }
     }
 
     private String getCommand(IMessage message){
@@ -63,6 +38,40 @@ public class CommandHandler {
     private void getArgs(String message){
         this.args = new String[message.split(" ").length];
         this.args = message.split(" ");
+    }
+
+    private void execute(String command){
+        try {
+            Commands commands = Commands.valueOf(command);
+            switch (commands) {
+                case help:
+                    help();
+                    break;
+                case commands:
+                    commands();
+                    break;
+                default:
+                    invalidCommand();
+                    break;
+            }
+        } catch (Exception e){
+            invalidCommand();
+        }
+    }
+
+    private void help(){
+        sendPublicMessages(this.message.getChannel(), this.message.getAuthor(), "If you want to see a list with" +
+                " all available commands. Tip !commands .\nHave a nice day!");
+    }
+
+    private void commands(){
+        StringBuilder sb = new StringBuilder();
+        System.out.println(Commands.values().toString());
+    }
+
+    private void invalidCommand(){
+        sendPublicMessages(this.message.getChannel(), this.message.getAuthor(), "There is no command: " + this.command + ".\n" +
+                "If you think this command would be nice to have, don't hesitate to contact the admins.");
     }
 
 }
