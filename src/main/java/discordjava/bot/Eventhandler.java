@@ -3,6 +3,9 @@ package discordjava.bot;
 import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.ReadyEvent;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
+import sx.blah.discord.handle.obj.IUser;
+
+import java.util.List;
 
 public class Eventhandler {
 

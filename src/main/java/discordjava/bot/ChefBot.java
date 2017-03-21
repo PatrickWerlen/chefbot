@@ -1,6 +1,7 @@
 package discordjava.bot;
 
 import sx.blah.discord.api.*;
+import sx.blah.discord.handle.impl.obj.Guild;
 import sx.blah.discord.handle.obj.*;
 import sx.blah.discord.util.DiscordException;
 
@@ -10,16 +11,23 @@ import java.util.List;
 
 public class ChefBot{
     public static IDiscordClient discordClient;
+    public static IGuild guild;
 
 
     public static void main( String[] args ){
         discordClient = getClient("MjkyMjM4MzQ5MDIzMDUxNzc2.C61Hyg.8pk5ogBb9zpV_8aVYdCzJLedLO8");
+        guild = getGuild("292223880292990977");
         discordClient.getDispatcher().registerListener(new Eventhandler());
         discordClient.getDispatcher().registerListener(new ReadyEventListener());
     }
 
     public static IDiscordClient getClient(String token) throws DiscordException{
         return new ClientBuilder().withToken(token).login();
+    }
+
+    public static IGuild getGuild(String guildID) throws DiscordException{
+        IGuild iGuild = discordClient.getGuildByID(guildID);
+        return iGuild;
     }
 
     public void sendPrivateMessages(IUser user, String message)
@@ -34,10 +42,7 @@ public class ChefBot{
     }
 
     public void joinVoiceChannel(){
-        List<IVoiceChannel> voiceChannels = ChefBot.discordClient.getVoiceChannels();
-        //just joins the first in the list todo
-        System.out.println(voiceChannels.get(0).getID());
-        ChefBot.discordClient.getVoiceChannelByID(voiceChannels.get(0).getID()).join();
+        ChefBot.discordClient.getVoiceChannelByID("292224117816557578").join();
     }
 
     public void moveToVoiceChannel(String userID, String voiceChannelID){

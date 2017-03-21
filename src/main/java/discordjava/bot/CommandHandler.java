@@ -1,7 +1,13 @@
 package discordjava.bot;
 
-import sx.blah.discord.handle.obj.IMessage;
-import sx.blah.discord.handle.obj.IUser;
+
+import sx.blah.discord.handle.obj.*;
+import sx.blah.discord.util.audio.AudioPlayer;
+import javax.sound.sampled.UnsupportedAudioFileException;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+
 
 public class CommandHandler extends ChefBot{
     private final IMessage message;
@@ -11,7 +17,7 @@ public class CommandHandler extends ChefBot{
 
     //enter all commands here. -> insert in switch execute() -> create function
     private enum Commands{
-        help, commands
+        help, commands, who, sound
     }
 
     public CommandHandler(IMessage message, IUser user){
@@ -50,11 +56,18 @@ public class CommandHandler extends ChefBot{
                 case commands:
                     commands();
                     break;
+                case who:
+                    who();
+                    break;
+                case sound:
+                    sound();
+                    break;
                 default:
                     invalidCommand();
                     break;
             }
         } catch (Exception e){
+            e.printStackTrace();
             invalidCommand();
         }
     }
@@ -66,8 +79,35 @@ public class CommandHandler extends ChefBot{
 
     private void commands(){
         StringBuilder sb = new StringBuilder();
-        System.out.println(Commands.values().toString());
+        sb.append(java.util.Arrays.asList(Commands.values()));
+        sendPublicMessages(this.message.getChannel(), this.message.getAuthor(), "To enter a command enter \"!\" followed by one of the follwing keywords " + sb);
     }
+
+    private void who(){
+        sendPublicMessages(this.message.getChannel(), this.message.getAuthor(), "" + discordClient.getUserByID("161804305177903104") + " is the biggest faggot.");
+
+    }
+
+    private void sound()throws IOException, UnsupportedAudioFileException{
+        joinVoiceChannel();
+        playAudioFromFile("GoldbyEchos.mp3", message.getGuild());
+    }
+
+    // Queue audio from specified file for guild
+    private static void playAudioFromFile(String s_file, IGuild guild) throws IOException, UnsupportedAudioFileException {
+        File file = new File("C:\\Users\\Patrick\\Dropbox\\discord_playlist\\mrsuicidesheep\\GoldbyEchos.mp3"); // Get file
+        AudioPlayer player = AudioPlayer.getAudioPlayerForGuild(guild); // Get AudioPlayer for guild
+        player.queue(file); // Queue file
+    }
+
+    // Queue audio from specified URL stream for guild
+    private static void playAudioFromUrl(String s_url, IGuild guild) throws IOException, UnsupportedAudioFileException {
+        URL url = new URL(s_url); // Get URL
+        AudioPlayer player = AudioPlayer.getAudioPlayerForGuild(guild); // Get AudioPlayer for guild
+        player.queue(url); // Queue URL stream
+    }
+
+
 
     private void invalidCommand(){
         sendPublicMessages(this.message.getChannel(), this.message.getAuthor(), "There is no command: " + this.command + ".\n" +
